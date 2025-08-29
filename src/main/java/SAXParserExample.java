@@ -16,48 +16,28 @@ import org.xml.sax.helpers.DefaultHandler;
 public class SAXParserExample extends DefaultHandler {
 
     List<Employee> employeeList;
-
+    // These variables keep track of the information we have collected from the parser as we encounter XML tags
+    // and are used to create a new Employee object when we reach the </employee> tag.
     private String tempVal;
-
-    //to maintain context
     private Employee tempEmp;
 
-    public void runExample() {
+    public void runExample() throws ParserConfigurationException, IOException, SAXException {
         parseDocument();
         printData();
     }
 
-    private void parseDocument() {
+    private void parseDocument() throws ParserConfigurationException, SAXException, IOException {
         // Create a factory that creates new SAX parers
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        try {
-            // Build a new parser from the factory
-            SAXParser sp = saxParserFactory.newSAXParser();
-
-            // Parses the file using the overriden methods below
-            sp.parse("employees.xml", this);
-
-        } catch (SAXException se) {
-            se.printStackTrace();
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        } catch (IOException ie) {
-            ie.printStackTrace();
-        }
+        // Build a new parser from the factory
+        SAXParser saxParser = saxParserFactory.newSAXParser();
+        // Parses the file using the overridden methods below
+        saxParser.parse("employees.xml", this);
     }
 
-    /**
-     * Iterate through the list and print
-     * the contents
-     */
     private void printData() {
-
         System.out.println("No of Employees '" + employeeList.size() + "'.");
-
-        Iterator<Employee> it = employeeList.iterator();
-        while (it.hasNext()) {
-            System.out.println(it.next().toString());
-        }
+        employeeList.forEach(System.out::println);
     }
 
     // Called once at the beginning of parsing a new document
@@ -99,7 +79,7 @@ public class SAXParserExample extends DefaultHandler {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
         SAXParserExample saxParserExample = new SAXParserExample();
         saxParserExample.runExample();
     }
